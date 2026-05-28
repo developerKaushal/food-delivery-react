@@ -6,7 +6,6 @@ const Body = () => {
 
   useEffect(() => {
     fetchData();
-    console.log("useEffect called");
   }, []);
 
   const fetchData = async () => {
