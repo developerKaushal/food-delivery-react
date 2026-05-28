@@ -1,19 +1,42 @@
 import RestaurantCard from "./RestaurantCard";
-import resList from "../utils/mockData";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Body = () => {
-  let [listOfRestaurants, setListOfRestaurants] = useState(resList);
+  let [listOfRestaurants, setListOfRestaurants] = useState([]);
 
+  useEffect(() => {
+    fetchData();
+    console.log("useEffect called");
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const data = await fetch(
+        "https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=28.63270&lng=77.21980&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING",
+      );
+
+      const json = await data.json();
+      // Extract restaurant data
+      const restaurants =
+        json?.data?.cards?.find(
+          (card) => card?.card?.card?.gridElements?.infoWithStyle?.restaurants,
+        )?.card?.card?.gridElements?.infoWithStyle?.restaurants || [];
+
+      setListOfRestaurants(restaurants);
+    } catch (error) {
+      console.error("Fetch Error:", error);
+    }
+  };
+  console.log(listOfRestaurants);
   return (
     <div className="body">
       <div
         className="filter-btn"
         onClick={() => {
-          listOfRestaurants = listOfRestaurants.filter(
+          filteredList = listOfRestaurants.filter(
             (res) => Number(res.info.avgRating) > 4,
           );
-          setListOfRestaurants(listOfRestaurants);
+          setListOfRestaurants(filteredList);
           console.log(listOfRestaurants);
         }}
       >
