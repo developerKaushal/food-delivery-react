@@ -66,3 +66,104 @@
   margin: 10px;
   cursor: pointer;
 }
+
+.shimmer-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+}
+
+.shimmer-card {
+  width: 220px;
+  height: 380px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  background-color: #f0f0f0;
+}
+
+.shimmer-img {
+  width: 100%;
+  height: 150px;
+  background-color: #d3d3d3;
+  margin-bottom: 15px;
+}
+
+.shimmer-title {
+  width: 80%;
+  height: 25px;
+  background-color: #d3d3d3;
+  margin-bottom: 15px;
+}
+
+.shimmer-text {
+  width: 100%;
+  height: 18px;
+  background-color: #d3d3d3;
+  margin-bottom: 12px;
+}
+
+.shimmer-text.small {
+  width: 60%;
+}
+
+.shimmer-img,
+.shimmer-title,
+.shimmer-text {
+  animation: shimmer 1.5s infinite linear;
+  background: linear-gradient(
+    to right,
+    #eeeeee 8%,
+    #dddddd 18%,
+    #eeeeee 33%
+  );
+
+  background-size: 1200px 100%;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1200px 0;
+  }
+
+  100% {
+    background-position: 1200px 0;
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  border: 1px solid black;
+  padding: 0 20px;
+
+  height: 90px;
+  background-color: #ffffff;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 120px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.nav-items > ul {
+  display: flex;
+  list-style-type: none;
+  gap: 30px;
+
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nav-items > ul > li:hover {
+  color: orange;
+}
