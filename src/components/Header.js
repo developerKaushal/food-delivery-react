@@ -14,10 +14,9 @@ function Header() {
           <li>About Us</li>
           <li>Contact Us</li>
           <li>Cart</li>
-<button onClick={() => {
-  console.log("Button clicked");
-  setIsLoggedIn(true);
-  }}>{isLoggedIn ? "Logout" : "Login"}</button>
+          <button onClick={() => {
+            setIsLoggedIn(true);
+          }}>{isLoggedIn ? "Logout" : "Login"}</button>
         </ul>
       </div>
     </div>

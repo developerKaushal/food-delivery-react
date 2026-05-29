@@ -46,7 +46,33 @@
 }
 
 .search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   padding: 10px;
+  margin: 10px;
+}
+
+.search-box {
+  padding: 8px 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 250px;
+}
+
+.search button {
+  padding: 8px 16px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #ff5200;
+  color: white;
+  border: none;
+  border-radius: 4px;
+}
+
+.search button:hover {
+  background-color: #e04a00;
 }
 
 .res-logo {
