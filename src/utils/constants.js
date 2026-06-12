@@ -6,7 +6,14 @@ export const LOGO_URL =
 const SWIGGY_RESTAURANTS_API =
   "https://www.swiggy.com/dapi/restaurants/list/v5?lat=28.63270&lng=77.21980&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING";
 
-export const RESTAURANTS_API_URL =
-  process.env.NODE_ENV === "production"
-    ? "/api/restaurants"
-    : `https://corsproxy.io/?${encodeURIComponent(SWIGGY_RESTAURANTS_API)}`;
+const CORS_PROXY_URL = `https://corsproxy.io/?${encodeURIComponent(SWIGGY_RESTAURANTS_API)}`;
+
+export const getRestaurantsApiUrl = () => {
+  const { hostname } = window.location;
+  const isLocalDev =
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    hostname === "[::1]";
+
+  return isLocalDev ? CORS_PROXY_URL : "/api/restaurants";
+};

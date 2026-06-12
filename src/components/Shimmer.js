@@ -1,19 +1,17 @@
 const Shimmer = () => {
   return (
-    <div className="shimmer-container">
-      {Array(10)
+    <div className="shimmer-container" aria-label="Loading restaurants">
+      {Array(8)
         .fill("")
-        .map((e, index) => (
+        .map((_, index) => (
           <div className="shimmer-card" key={index}>
-            <div className="shimmer-img"></div>
-
-            <div className="shimmer-title"></div>
-
-            <div className="shimmer-text"></div>
-
-            <div className="shimmer-text small"></div>
-
-            <div className="shimmer-text small"></div>
+            <div className="shimmer-img" />
+            <div className="shimmer-body">
+              <div className="shimmer-title" />
+              <div className="shimmer-text" />
+              <div className="shimmer-text small" />
+              <div className="shimmer-text small" />
+            </div>
           </div>
         ))}
     </div>

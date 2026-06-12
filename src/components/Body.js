@@ -1,7 +1,7 @@
 import RestaurantCard from "./RestaurantCard";
 import { useEffect, useState } from "react";
 import Shimmer from "./Shimmer";
-import { RESTAURANTS_API_URL } from "../utils/constants";
+import { fetchRestaurants } from "../utils/fetchRestaurants";
 
 const Body = () => {
   const [listOfRestaurants, setListOfRestaurants] = useState([]);
@@ -19,19 +19,7 @@ const Body = () => {
     setError(null);
 
     try {
-      const data = await fetch(RESTAURANTS_API_URL);
-
-      const json = await data.json();
-
-      if (!data.ok || json?.error) {
-        throw new Error(json?.error || "Failed to load restaurants");
-      }
-
-      const restaurants =
-        json?.data?.cards?.find(
-          (card) => card?.card?.card?.gridElements?.infoWithStyle?.restaurants,
-        )?.card?.card?.gridElements?.infoWithStyle?.restaurants || [];
-
+      const restaurants = await fetchRestaurants();
       setListOfRestaurants(restaurants);
       setFilteredRestaurants(restaurants);
     } catch (error) {
@@ -49,6 +37,18 @@ const Body = () => {
     setFilteredRestaurants(filtered);
   };
 
+  const handleTopRated = () => {
+    const filtered = listOfRestaurants.filter(
+      (res) => Number(res.info.avgRating) > 4,
+    );
+    setFilteredRestaurants(filtered);
+    setSearchText("");
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleSearch();
+  };
+
   if (isLoading) {
     return <Shimmer />;
   }
@@ -57,40 +57,59 @@ const Body = () => {
     return (
       <div className="error-container">
         <p>{error}</p>
-        <button onClick={fetchData}>Retry</button>
+        <button className="btn-primary" onClick={fetchData}>
+          Retry
+        </button>
       </div>
     );
   }
 
   return (
-    <div className="body">
-      <div className="search">
-        <input
-          type="text"
-          className="search-box"
-          placeholder="Search restaurants..."
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-        />
-        <button onClick={handleSearch}>Search</button>
+    <main className="body">
+      <div className="body-toolbar">
+        <div className="search">
+          <input
+            type="text"
+            className="search-box"
+            placeholder="Search restaurants..."
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+          <button className="btn-primary" onClick={handleSearch}>
+            Search
+          </button>
+        </div>
+        <button className="btn-secondary" onClick={handleTopRated}>
+          Top Rated Restaurants
+        </button>
+        <p className="results-count">
+          {filteredRestaurants.length} restaurant
+          {filteredRestaurants.length !== 1 ? "s" : ""} found
+        </p>
       </div>
-      <div
-        className="filter-btn"
-        onClick={() => {
-          const filtered = listOfRestaurants.filter(
-            (res) => Number(res.info.avgRating) > 4,
-          );
-          setFilteredRestaurants(filtered);
-        }}
-      >
-        <button>Top Rated Restaurant</button>
-      </div>
-      <div className="res-container">
-        {filteredRestaurants.map((restaurant) => (
-          <RestaurantCard key={restaurant.info.id} resData={restaurant} />
-        ))}
-      </div>
-    </div>
+
+      {filteredRestaurants.length === 0 ? (
+        <div className="empty-state">
+          <p>No restaurants match your search. Try a different name.</p>
+          <button
+            className="btn-secondary"
+            onClick={() => {
+              setSearchText("");
+              setFilteredRestaurants(listOfRestaurants);
+            }}
+          >
+            Show All Restaurants
+          </button>
+        </div>
+      ) : (
+        <div className="res-container">
+          {filteredRestaurants.map((restaurant) => (
+            <RestaurantCard key={restaurant.info.id} resData={restaurant} />
+          ))}
+        </div>
+      )}
+    </main>
   );
 };
 
