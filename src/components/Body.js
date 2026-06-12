@@ -1,23 +1,32 @@
 import RestaurantCard from "./RestaurantCard";
 import { useEffect, useState } from "react";
 import Shimmer from "./Shimmer";
+import { RESTAURANTS_API_URL } from "../utils/constants";
 
 const Body = () => {
   const [listOfRestaurants, setListOfRestaurants] = useState([]);
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const [searchText, setSearchText] = useState("");
-console.log("Body render")
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
+    setIsLoading(true);
+    setError(null);
+
     try {
-      const data = await fetch(
-        "https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=28.63270&lng=77.21980&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING",
-      );
+      const data = await fetch(RESTAURANTS_API_URL);
 
       const json = await data.json();
+
+      if (!data.ok || json?.error) {
+        throw new Error(json?.error || "Failed to load restaurants");
+      }
+
       const restaurants =
         json?.data?.cards?.find(
           (card) => card?.card?.card?.gridElements?.infoWithStyle?.restaurants,
@@ -27,6 +36,9 @@ console.log("Body render")
       setFilteredRestaurants(restaurants);
     } catch (error) {
       console.error("Fetch Error:", error);
+      setError(error.message || "Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -37,8 +49,17 @@ console.log("Body render")
     setFilteredRestaurants(filtered);
   };
 
-  if (listOfRestaurants.length === 0) {
+  if (isLoading) {
     return <Shimmer />;
+  }
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <p>{error}</p>
+        <button onClick={fetchData}>Retry</button>
+      </div>
+    );
   }
 
   return (
